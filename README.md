@@ -1,9 +1,20 @@
-## IRIS Tutorial: Unit Root Models
+## IrisT Tutorial: Unit Root Models
 
-In this tutorial, we show how to build and handle models with unit-root
-variables, such as balanced-growth path models. In IRIS, unit-root models
-do not need to be stationarized, and can be built, simulated and analyzed
+In this tutorial, build and handle models with unit-root
+variables, such as balanced-growth path models. In IrisT, unit-root models
+do not need to be stationarized, and can be coded up, simulated and analyzed
 with the variables in their original levels.
 
-Start in `Contents.m`.
+
+## Model source files
+
+* [`exogenousGrowth.model`](exogenousGrowth.model)
+* [`exogenousGrowthStationarized.model`](exogenousGrowthStationarized.model)
+
+
+## Matlab scripts
+
+* [`run01_createModels.m`](run01_createModels.m)
+* [`run02_compareShockSimulations`](run02_compareShockSimulations.m)
+* [`run03_compareAcf`](run03_compareAcf.m)
 

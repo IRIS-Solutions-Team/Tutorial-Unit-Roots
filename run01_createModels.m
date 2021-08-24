@@ -11,10 +11,8 @@
 
 %% Clear workspace
 
-clear
 close all
-clc
-irisrequired 20180209
+clear
 
 
 %% Create a baseline parameter database
@@ -23,25 +21,27 @@ irisrequired 20180209
 % frequency.
 %
 
-P = struct( );
-P.g = 1.03;
-P.gamma = 0.60;
-P.delta = 0.10;
-P.beta = 0.97;
+p = struct( );
+p.g = 1.03;
+p.gamma = 0.60;
+p.delta = 0.10;
+p.beta = 0.97;
+
 
 %% Load Model Files
 %
 % Load both versions of the model: one version is stationarized
-% (|exog_growth_stationarized.model|), the other is the same model without
-% any transformation (|exog_growth_unit_root.model|), i.e. variables are in
+% (`exogenousGrowthStationarized.model`), the other is the same model without
+% any transformation (`exogenousGrowth.model`), i.e. variables are in
 % their original forms, not stationarized, and the model code thus
 % preserves the unit root in it.
 
-m1 = model('exog_growth_stationarized.model', 'Assign=', P);
-m2 = model('exog_growth_unit_root.model', 'Assign=', P);
+m1 = Model.fromFile("exogenousGrowthStationarized.model", "assign", p);
+m2 = Model.fromFile("exogenousGrowth.model", "assign", p);
 
 disp(m1)
 disp(m2)
+
 
 %%%
 %
@@ -50,9 +50,10 @@ disp(m2)
 
 m3 = m2;
 
+
 %% Calcuate Steady States (Balanced-Growth Paths)
 %
-% First, find the stationary steady state of |m1|. Then, find two different
+% First, find the stationary steady state of `m1`. Then, find two different
 % points on the balanced-growth path for the unit-root version of the
 % model. Each of these two BGP points corresponds to a different level of
 % productivity. It does not matter at all what point on the BGP is used --
@@ -60,20 +61,20 @@ m3 = m2;
 % same results.
 %
 % When calculating the steady state for models in which some variables grow
-% at a nonzero rate, set |Growth=true|; otherwise, it is assumed that all
+% at a nonzero rate, set `Growth=true`; otherwise, it is assumed that all
 % variables are flat in steady state.
 %
 
-m1 = sstate(m1, 'Growth=', false, 'Solver=', 'IRIS');
-chksstate(m1);
+m1 = sstate(m1, "Growth", false);
+checkSteady(m1);
 
 m2.A = 1;
-m2 = sstate(m2, 'Growth=', true, 'FixLevel=', {'A'}, 'Solver=', 'IRIS');
-chksstate(m2)
+m2 = sstate(m2, "Growth", true, "FixLevel", "A");
+checkSteady(m2)
 
 m3.A = 2;
-m3 = sstate(m3, 'Growth', true, 'FixLevel=', {'A'}, 'Solver=', 'IRIS');
-chksstate(m3)
+m3 = sstate(m3, "Growth", true, "FixLevel", "A");
+checkSteady(m3)
 
 
 %% Look at Steady State (Balanced-Growth Path)
@@ -86,7 +87,7 @@ chksstate(m3)
 % path. Think of it as a snapshot of the BGP at a particular (arbitrary)
 % time.
 %
-% In IRIS, the two pieces of information that describe the steady state or
+% In IrisT, the two pieces of information that describe the steady state or
 % BGP (level and growth) are stored as complex numbers. This is simply a
 % convenient way of storing two pieces of information in one number; it has
 % nothing to do with complex numbers themselves:
@@ -98,35 +99,35 @@ chksstate(m3)
 % change, i.e. $\bar x_t / \bar x_{t-1}$.
 %
 
-get(m1, 'Steady')
-get(m2, 'Steady')
-get(m3, 'Steady')
+access(m1, "steady")
+access(m2, "steady")
+access(m3, "steady")
 
-%%%
+
 %
 % Get only the steady-state (balanced-growth path) levels.
 %
 
-get(m1, 'SteadyLevel')
-get(m2, 'SteadyLevel')
-get(m3, 'SteadyLevel')
+access(m1, "steady-level")
+access(m2, "steady-level")
+access(m3, "steady-level")
 
-%%%
+
 %
 % Get only the steady-state (balanced-growth path) growth rates.
 %
 
-get(m1, 'SteadyGrowth')
-get(m2, 'SteadyGrowth')
-get(m3, 'SteadyGrowth')
+access(m1, "steady-change")
+access(m2, "steady-change")
+access(m3, "steady-change")
 
 
 %% Compute First-Order Solution
 %
-% The model |m1| is stationary, so IRIS simply computes the first-order
+% The model `m1` is stationary, so IrisT simply computes the first-order
 % Taylor expansion around the steady state, and solves for rational
-% expectations. What about models |m2| and |m3|? It's surprisingly easy.
-% Compute the first-order expansion around any point on the model's
+% expectations. What about models `m2` and `m3`? It"s surprisingly easy.
+% Compute the first-order expansion around any point on the model"s
 % balanced-growth path. For instance, the Euler equation (with the
 % expectations operator dropped for ease of notation)
 %
@@ -141,7 +142,7 @@ get(m3, 'SteadyGrowth')
 % It is easy to show that the above procedure is equivalent to the
 % following steps:
 %
-% # Stationarize the model (i.e. transform the model into |m1|).
+% # Stationarize the model (i.e. transform the model into `m1`).
 % # Solve the model for the transformed (stationarized) quantities, e.g.
 % $y_t := Y_t/A_t$.
 % # After solving the model, substitute back the original quantities, and
@@ -159,21 +160,6 @@ m3 = solve(m3)
 
 %% Save Everything to MAT File for Further Use
 
-save MAT/read_model.mat m1 m2 m3
+save mat/createModels.mat m1 m2 m3
 
-
-%% Show Variables and Objects Created in This File                         
-
-whos
-
-
-%% Help on IRIS functions used in this m-file
-%
-%    help model/model
-%    help model/sstate
-%    help model/subsasgn
-%    help model/chksstate
-%    help model/get
-%    help model/solve
-%
 
