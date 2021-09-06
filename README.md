@@ -8,8 +8,8 @@ with the variables in their original levels.
 
 ## Model source files
 
-* [`exogenousGrowth.model`](exogenousGrowth.model)
-* [`exogenousGrowthStationarized.model`](exogenousGrowthStationarized.model)
+* [`model-source/exogenous-growth.model`](model-source/exogenous-growth.model)
+* [`model-source/exogenous-growth-stationarized.model`](model-source/exogenous-growth-stationarized.model)
 
 
 ## Matlab scripts

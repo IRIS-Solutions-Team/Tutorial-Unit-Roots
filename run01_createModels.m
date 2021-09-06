@@ -1,4 +1,4 @@
-%% Read different versions of the same model
+%% Create different variants of an exogenous growth model 
 %
 % In this m-file, we create different versions of the same exogenous-growth
 % model: a stationarized version (where all unit-root variables are
@@ -28,7 +28,7 @@ p.delta = 0.10;
 p.beta = 0.97;
 
 
-%% Load Model Files
+%% Load model files
 %
 % Load both versions of the model: one version is stationarized
 % (`exogenousGrowthStationarized.model`), the other is the same model without
@@ -36,8 +36,8 @@ p.beta = 0.97;
 % their original forms, not stationarized, and the model code thus
 % preserves the unit root in it.
 
-m1 = Model.fromFile("exogenousGrowthStationarized.model", "assign", p);
-m2 = Model.fromFile("exogenousGrowth.model", "assign", p);
+m1 = Model.fromFile("model-source/exogenous-growth-stationarized.model", "assign", p);
+m2 = Model.fromFile("model-source/exogenous-growth.model", "assign", p, "growth", true);
 
 disp(m1)
 disp(m2)
@@ -51,7 +51,7 @@ disp(m2)
 m3 = m2;
 
 
-%% Calcuate Steady States (Balanced-Growth Paths)
+%% Calculate steady states (Balanced-growth paths)
 %
 % First, find the stationary steady state of `m1`. Then, find two different
 % points on the balanced-growth path for the unit-root version of the
@@ -65,19 +65,19 @@ m3 = m2;
 % variables are flat in steady state.
 %
 
-m1 = sstate(m1, "Growth", false);
+m1 = steady(m1);
 checkSteady(m1);
 
 m2.A = 1;
-m2 = sstate(m2, "Growth", true, "FixLevel", "A");
+m2 = steady(m2, "fixLevel", "A");
 checkSteady(m2)
 
 m3.A = 2;
-m3 = sstate(m3, "Growth", true, "FixLevel", "A");
+m3 = sstate(m3, "fixLevel", "A");
 checkSteady(m3)
 
 
-%% Look at Steady State (Balanced-Growth Path)
+%% Look at steady state (Balanced-growth path)
 %
 % The steady state, or balanced-growth path, is described by two numbers
 % for each variable: the level of the variable, and its growth rate. In BGP
@@ -122,7 +122,7 @@ access(m2, "steady-change")
 access(m3, "steady-change")
 
 
-%% Compute First-Order Solution
+%% Compute first-order solution
 %
 % The model `m1` is stationary, so IrisT simply computes the first-order
 % Taylor expansion around the steady state, and solves for rational
@@ -158,7 +158,7 @@ m2 = solve(m2)
 m3 = solve(m3)
 
 
-%% Save Everything to MAT File for Further Use
+%% Save everything to mat file for further use
 
 save mat/createModels.mat m1 m2 m3
 

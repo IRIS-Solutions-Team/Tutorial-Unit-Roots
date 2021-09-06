@@ -1,11 +1,11 @@
-%% Compare Autocovariance Functions of Stationarized and Unit-Root Models
+%% Compare autocovariance functions of stationarized and unit-root models
 %
 % In this m-file, we show that the autocovariance functions implied by the
 % unit-root model and its stationarized version are identical.
 %
 
 
-%% Clear the Workspace
+%% Clear workspace 
 %
 % Clear all variables, close all figure windows, clear command window, and
 % check the IrisT version.
@@ -17,7 +17,7 @@ clear
 load mat/createModels.mat m1 m2 m3
 
 
-%% Calculate the Autocovariance Function
+%% Calculate the autocovariance function
 %
 % Compute the autocovariance function up to first order (i.e. t-1 lag).
 % Note that the variance-covariance of unit-root variables in models `m2`
@@ -50,7 +50,7 @@ c2(:, :, 2)
 c3(:, :, 2)
 
 
-%% Select Subset of Stationary Variables
+%% Select subset of stationary variables
 %
 % Compare the autocovariance function of a subset of stationary variables:
 % for instance, `y = Y/A`, `c = C/A`, and `r`. The size of the resulting

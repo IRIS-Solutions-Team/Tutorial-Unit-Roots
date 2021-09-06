@@ -1,11 +1,11 @@
-%% Compare Shock Simulations in Stationarized and Unit-Root Models
+%% Compare shock simulations in stationarized and unit-root models
 %
 % In this m-file, we show that the three model versions (stationarized and
 % unit-root) have identical shock responses.
 %
 
 
-%% Clear the Workspace
+%% Clear workspace 
 %
 % Clear all variables, close all figure windows, clear command window, and
 % check the IrisT version.
@@ -17,7 +17,7 @@ clear
 load mat/createModels.mat m1 m2 m3
 
 
-%% Simulate a Productivity Shock
+%% Simulate a productivity shock
 %
 % Simulate the same shock, `u`,  in the three versions of the model.
 %
@@ -35,7 +35,7 @@ d3.u(1) = 0.10;
 s3 = simulate(m3, d3, 1:40, "prependInput", true);
 
 
-%% Plot the Productivity Shock Responses
+%% Plot the productivity shock responses
 %
 % Plot the responses in the same variables (or their transformations) for
 % all three model versions.
@@ -64,7 +64,7 @@ draw(ch, s3);
 title("Productivity shock: Model m3");
 
 
-%% Compare Numerically the Shock Responses
+%% Compare numerically the shock responses
 % 
 % Display the numerical values and their differences for stationarized
 % output `y` from the three simulated models.
@@ -75,7 +75,7 @@ disp([ s2.Y/s2.A-s1.y, s2.y-s1.y, s3.Y/s3.A-s1.y, s3.y-s1.y])
 maxabs([ s2.Y/s2.A-s1.y, s2.y-s1.y, s3.Y/s3.A-s1.y, s3.y-s1.y])
 
 
-%% Unit-Root Responses
+%% Unit-root responses
 %
 % In models `m2` and `m3`, the responses inthe unit-root variables (note
 % that the shock has permanent effect on all of them) can be obtained
